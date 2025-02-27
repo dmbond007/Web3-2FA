@@ -1,18 +1,26 @@
 import NextAuth from "next-auth"
+//import AccountRetrieval from "./app/lib/credentials"
 import Credentials from "next-auth/providers/credentials"
+import {PrismaClient} from "@prisma/client"
+import {PrismaAdapter} from "@auth/prisma-adapter"
 // Your own logic for dealing with plaintext password strings; be careful!
 //import { saltAndHashPassword } from "@/utils/password"
-
+export const runtime = 'nodejs';
 declare module "next-auth" {
   interface User {
     // Add your additional properties here:
+    address: string | undefined
     cleared2Fa?: boolean | undefined
     nonce: string
   }
 }
-
+const prisma = new PrismaClient()
  
 export const { handlers, signIn, signOut, auth, unstable_update } = NextAuth({
+  session: {
+    strategy: "jwt",
+  },
+  adapter: PrismaAdapter(prisma) as any,
   providers: [
     Credentials({
       name: "Credentials",
@@ -23,22 +31,32 @@ export const { handlers, signIn, signOut, auth, unstable_update } = NextAuth({
         password: { label: "Password", type: "password" },
       },
       authorize: async (credentials) => {
-        let user = null
- 
+
+
+        const user = await prisma.users.findUnique({
+          where: { email: credentials.email as string } 
+        })
+        
+        if (! user){
+          return null;
+        }
+        
         // logic to salt and hash password
         //const pwHash = saltAndHashPassword(credentials.password)
- 
-        // logic to verify if the user exists
-        user = {name: "nikki", address: "1234", id: "234", cleared2Fa: false, nonce: ""}
+
  
         if (!user) {
           // No user found, so this is their first attempt to login
           // Optionally, this is also the place you could do a user registration
           throw new Error("Invalid credentials.")
         }
- 
         // return user object with their profile data
-        return user
+        return {name: user.fname as string,
+          address: user.wallet as string,
+          id: user.login as string,
+          cleared2Fa : false, 
+          nonce: ""
+        }
       },
     }),
   ],
@@ -64,3 +82,57 @@ export const { handlers, signIn, signOut, auth, unstable_update } = NextAuth({
     },
   },
 })
+  
+
+/*
+export const authOptions = {
+  providers: [
+    Credentials({
+      name: "Credentials",
+      // You can specify which fields should be submitted, by adding keys to the `credentials` object.
+      // e.g. domain, username, password, 2FA token, etc.
+      credentials: {
+        email: { label: "Email", type: "text" },
+        password: { label: "Password", type: "password" },
+      },
+      authorize: async (credentials) => {
+
+
+        const user = await AccountRetrieval(credentials.email as string, credentials.password as string)
+ 
+        // logic to salt and hash password
+        //const pwHash = saltAndHashPassword(credentials.password)
+
+ 
+        if (!user) {
+          // No user found, so this is their first attempt to login
+          // Optionally, this is also the place you could do a user registration
+          throw new Error("Invalid credentials.")
+        }
+        // return user object with their profile data
+        return user
+      },
+    }),
+  ],
+  callbacks: {
+    jwt({ token, user, trigger, session }: any) {
+      if (user) { // User is available during sign-in
+        token.id = user.id
+        token.cleared2Fa = user.cleared2Fa
+        token.nonce = user.nonce
+      }
+      if (trigger === "update") {
+        console.log('here!')
+        token.cleared2Fa = session.user.cleared2Fa
+        token.nonce = session.user.nonce
+      }
+      return token
+    },
+    session({ session, token }: any) {
+      session.user.id = token.id as string
+      session.user.cleared2Fa = token.cleared2Fa as boolean
+      session.user.nonce = token.nonce as string
+      return session
+    },
+  },
+}*/

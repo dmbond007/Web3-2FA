@@ -1,0 +1,45 @@
+datasource db {
+    provider = "mysql"
+    url = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Loginfo {
+login     String    @id
+passhash  BigInt
+}
+
+
+
+model Users {
+login           String    @id
+fname           String
+lname           String 
+email           String    @unique
+wallet          String
+phone           BigInt
+city            String
+state           String
+zip             Int 
+street_address  String
+} 
+
+
+
+model  Accounts {
+acc        String    @id
+login      String
+balance    Int
+acctype    String
+}
+
+
+model  Transactions { 
+transid     String    @id
+acc         String
+transdate   DateTime
+transvalue  Decimal 
+}
