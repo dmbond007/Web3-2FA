@@ -1,5 +1,4 @@
 import { signIn, signOut } from "@/auth"
-//import type { BuiltInProviderType } from "next-auth/providers";
 
 export default function Home() {
   return (
@@ -7,7 +6,6 @@ export default function Home() {
       action={async () => {
         "use server"
         await signIn("Credentials", { redirectTo: "/2fa" })
-        //await signIn()
       } }
     >
       <button type="submit">Sign in</button>

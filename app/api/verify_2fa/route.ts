@@ -28,7 +28,7 @@ export async function POST(req: NextRequest) {
     if (session?.user) {
       await unstable_update({user: { nonce: "", cleared2Fa: true}});
     }
-    return Response.json({ message: "2FA verification successful" });
+    return NextResponse.json({ message: "2FA verification successful" }, {status: 200});
   } catch (e) {
     if (session?.user) {
       await unstable_update({user: { nonce: "", cleared2Fa: false}});

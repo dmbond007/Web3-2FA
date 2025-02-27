@@ -1,7 +1,6 @@
 import { NextResponse } from "next/server";
 import { generateNonce, SiweMessage } from 'siwe';
 import { auth, unstable_update } from "../../../auth"
-import { unauthorized } from 'next/navigation'
 
 export async function GET() {
     // Generate a nonce (random string)
