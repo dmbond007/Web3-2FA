@@ -1,10 +1,7 @@
 import NextAuth from "next-auth"
-//import AccountRetrieval from "./app/lib/credentials"
 import Credentials from "next-auth/providers/credentials"
 import {PrismaClient} from "@prisma/client"
 import {PrismaAdapter} from "@auth/prisma-adapter"
-// Your own logic for dealing with plaintext password strings; be careful!
-//import { saltAndHashPassword } from "@/utils/password"
 export const runtime = 'nodejs';
 declare module "next-auth" {
   interface User {
@@ -14,7 +11,8 @@ declare module "next-auth" {
     nonce: string
   }
 }
-const prisma = new PrismaClient()
+
+export const prisma = new PrismaClient()
  
 export const { handlers, signIn, signOut, auth, unstable_update } = NextAuth({
   session: {
@@ -55,7 +53,8 @@ export const { handlers, signIn, signOut, auth, unstable_update } = NextAuth({
           address: user.wallet as string,
           id: user.login as string,
           cleared2Fa : false, 
-          nonce: ""
+          nonce: "",
+          email: user.email
         }
       },
     }),
@@ -66,9 +65,9 @@ export const { handlers, signIn, signOut, auth, unstable_update } = NextAuth({
         token.id = user.id
         token.cleared2Fa = user.cleared2Fa
         token.nonce = user.nonce
+        token.email = user.email
       }
       if (trigger === "update") {
-        console.log('here!')
         token.cleared2Fa = session.user.cleared2Fa
         token.nonce = session.user.nonce
       }
@@ -78,6 +77,7 @@ export const { handlers, signIn, signOut, auth, unstable_update } = NextAuth({
       session.user.id = token.id as string
       session.user.cleared2Fa = token.cleared2Fa as boolean
       session.user.nonce = token.nonce as string
+      session.user.email = token.email as string
       return session
     },
   },

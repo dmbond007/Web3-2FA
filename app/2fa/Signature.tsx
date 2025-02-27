@@ -56,6 +56,8 @@ export default function Signature() {
       });
       if (res.ok) {
         redirect('/dashboard')
+      } else if (res.status == 401) {
+        redirect('/signout')
       }
     }
 
