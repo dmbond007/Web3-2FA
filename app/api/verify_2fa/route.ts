@@ -1,10 +1,13 @@
 import { NextRequest, NextResponse } from "next/server";
 import { SiweMessage, SiweErrorType } from "siwe";
-import { auth, unstable_update, prisma, signOut } from "../../../auth"
-import { cookies } from "next/headers"
+import { auth, unstable_update, signOut } from "../../../auth"
 
 export async function POST(req: NextRequest) {
   const session = await auth()
+  if (!session) {
+    return NextResponse.json({ error: "Not Authorized" }, { status: 401 })
+  }
+
   try {
     const body = await req.json();
     const { message, signature } = body;
@@ -21,15 +24,11 @@ export async function POST(req: NextRequest) {
         { status: 422 }
       );
     }
-    
-    const user = await prisma.users.findUnique({
-      where: { email: session?.user?.email } 
-    })
 
     let SIWEObject = new SiweMessage(message);
     const data = await SIWEObject.verify({ signature: signature, nonce });
 
-    if (!data.success || data.data.address != user.address as string) {
+    if (!data.success || data.data.address != session?.user?.address as string) {
       return NextResponse.json({ message: "Unauthenticated" }, {status: 401})
     }
     

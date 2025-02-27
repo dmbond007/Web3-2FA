@@ -12,7 +12,7 @@ declare module "next-auth" {
   }
 }
 
-export const prisma = new PrismaClient()
+const prisma = new PrismaClient()
  
 export const { handlers, signIn, signOut, auth, unstable_update } = NextAuth({
   session: {
@@ -66,6 +66,7 @@ export const { handlers, signIn, signOut, auth, unstable_update } = NextAuth({
         token.cleared2Fa = user.cleared2Fa
         token.nonce = user.nonce
         token.email = user.email
+        token.address = user.address
       }
       if (trigger === "update") {
         token.cleared2Fa = session.user.cleared2Fa
@@ -78,6 +79,7 @@ export const { handlers, signIn, signOut, auth, unstable_update } = NextAuth({
       session.user.cleared2Fa = token.cleared2Fa as boolean
       session.user.nonce = token.nonce as string
       session.user.email = token.email as string
+      session.user.address = token.address as string
       return session
     },
   },
