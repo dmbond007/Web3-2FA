@@ -7,7 +7,6 @@ import React from 'react'
 import { WagmiProvider, cookieToInitialState } from 'wagmi'
 import { RainbowKitProvider, } from '@rainbow-me/rainbowkit';
 import { getConfig } from '../wagmi';
-import { headers } from 'next/headers';
 import './globals.css'
 import { ReactNode } from "react";
 import { useState } from 'react';
@@ -15,12 +14,12 @@ import { useState } from 'react';
 globalThis.Buffer = Buffer
 
 
-export default async function Web3Provider({ children }: { children: ReactNode }) {
-  const initialState = cookieToInitialState(
-    getConfig(),
-    (await headers()).get('cookie'));
+export default function Web3Provider({ children, param }: { children: ReactNode, param: any }) {
   const [config] = useState(() => getConfig());
   const [queryClient] = useState(() => new QueryClient());
+  const initialState = cookieToInitialState(
+    getConfig(),
+    param);
 
   return (
     <React.StrictMode>

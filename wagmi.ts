@@ -1,3 +1,5 @@
+"use client"
+
 import { http, cookieStorage, createStorage } from 'wagmi'
 import { mainnet } from 'wagmi/chains'
 import { connectorsForWallets, Wallet } from '@rainbow-me/rainbowkit';
@@ -14,7 +16,7 @@ const oktoWalletV2connector = okto({
 export const oktoWalletV2 = ({ projectId }: MyWalletOptions): Wallet => ({
   id: 'Okto-v2',
   name: 'OktoV2',
-  iconUrl: async () => (await import('.img/oktoWallet.svg')).default,
+  iconUrl: async () => (await import('./app/img/oktoWallet.svg')).default,
   iconBackground: '#fff',
   downloadUrls: {
     android:
