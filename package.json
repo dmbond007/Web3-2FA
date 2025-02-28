@@ -20,11 +20,8 @@
     "node-password-util": "^1.0.1",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
-<<<<<<< HEAD
-    "salted-sha256": "^1.0.4",
-=======
     "react-hook-form": "^7.54.2",
->>>>>>> 9062109e6bcd4459316c9417bda2a0ac44e4407b
+    "salted-sha256": "^1.0.4",
     "siwe": "^3.0.0",
     "viem": "^2.23.5",
     "wagmi": "^2.14.12"

@@ -54,7 +54,7 @@ export const { handlers, signIn, signOut, auth, unstable_update } = NextAuth({
         // return user object with their profile data
         return {name: user.fname as string,
           address: user.wallet as string,
-          id: user.login as string,
+          id: (user.id as any) as string,
           cleared2Fa : false, 
           nonce: "",
           email: user.email
