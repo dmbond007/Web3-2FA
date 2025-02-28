@@ -1,24 +1,52 @@
 "use client";
 
-import { useForm } from "react-hook-form";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import RegisterForm from './Registration'
 import { ConnectButton } from '@rainbow-me/rainbowkit';
 import { useAccount } from 'wagmi'
 import { redirect } from 'next/navigation'
+import { useSession } from "next-auth/react";
 
 export default function Register() {
   
   const [submitted, setSubmitted] = useState(false);
   const [finished, setFinished] = useState(false);
-  const [registrationData, setRegistrationData] = useState();
+  const [error, setError] = useState("");
+  const [registrationData, setRegistrationData] = useState({});
   const {address, isConnected} = useAccount()
+  const { status } = useSession()
+  
+  useEffect(() => {
+    if (status === 'authenticated') {
+      redirect('/dashboard')
+    }
+  }, [status]);
 
   const handleClick = async () => {
-    console.log("Form Submitted:", registrationData);
-    console.log(address)
-    setSubmitted(true);
-    setFinished(true)
+    if (!registrationData) {
+      setError("Something went wrong, please refresh the page")
+      return
+    }
+    const formData = {...registrationData, address}
+    try {
+      const response = await fetch("/api/auth/register", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      });
+
+      await response.json();
+
+      if (!response.ok) {
+        setError("Something went wrong, please refresh the page")
+        return
+      }
+      setFinished(true)
+    } catch (err: any) {
+      setError(err.message);
+    }
   };
   
 
@@ -57,6 +85,7 @@ export default function Register() {
               >
                 Save my second factor
               </button>
+              <p className="text-red-600 text-center">{error}</p>
             </div>
         ) : (<RegisterForm setSubmitted={setSubmitted} setData={setRegistrationData}/>)
       )}
