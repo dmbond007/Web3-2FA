@@ -34,7 +34,7 @@ FOREIGN KEY (acc) REFERENCES Accounts (acc));
 
 
 INSERT INTO Users (id, passhash, salt, fname, lname, email, wallet) 
-VALUES (1,'9a0f37cc4a18adffb7bc8b7897aa727fe4779fcad8764417aa0285705d4f667b', 'SUPER-S@LT!', 'Dmitry', 'Bondarev', 'bondareff.dmitry@mail.ru', '0x28fF6c3b3427EB2E0e1eD25e512f3201074EA426');
+VALUES (1,'11d03c77895b0bd739efc2ae2a05d469143af7ceb124648ba94bc9103a616382', '9a0f37cc4a18adffb7bc8b7897aa727fe4779fcad8764417aa0285705d4f667b', 'Dmitry', 'Bondarev', 'bondareff.dmitry@mail.ru', '0x28fF6c3b3427EB2E0e1eD25e512f3201074EA426');
 INSERT INTO Accounts (acc, id, balance, acctype) 
 VALUES (1, 1, 1000.00, 'Checking');
 INSERT INTO Transactions (transid, acc, transdate, transvalue) 

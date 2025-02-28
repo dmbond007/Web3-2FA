@@ -33,24 +33,22 @@ export const { handlers, signIn, signOut, auth, unstable_update } = NextAuth({
       },
       //const pwHash = saltAndHashPassword(credentials.password)
       authorize: async (credentials) => {
-        const saltedHashAsync = await saltedSha256(credentials.password, 'SUPER-S@LT!', true);
-        console.log(saltedHashAsync);
         const user = await prisma.users.findUnique({
-          where: { email: credentials.email as string, passhash: saltedHashAsync as string }
+          where: { email: credentials.email as string }
         })
-
         if (!user) {
           return null;
         }
+        const saltedHashAsync = await saltedSha256(credentials.password, user.salt, true);
 
         // logic to salt and hash password
         //const pwHash = saltAndHashPassword(credentials.password)
 
 
-        if (!user) {
+        if (saltedHashAsync != user.passhash) {
           // No user found, so this is their first attempt to login
           // Optionally, this is also the place you could do a user registration
-          throw new Error("Invalid credentials.")
+          return null;
         }
         // return user object with their profile data
         return {
