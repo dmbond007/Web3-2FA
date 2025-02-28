@@ -61,6 +61,7 @@ export const { handlers, signIn, signOut, auth, unstable_update } = NextAuth({
   callbacks: {
     jwt({ token, user, trigger, session }) {
       if (user) { // User is available during sign-in
+        token.name = user.name
         token.id = user.id
         token.cleared2Fa = user.cleared2Fa
         token.nonce = user.nonce
@@ -74,6 +75,7 @@ export const { handlers, signIn, signOut, auth, unstable_update } = NextAuth({
       return token
     },
     session({ session, token }) {
+      session.user.name = token.name
       session.user.id = token.id as string
       session.user.cleared2Fa = token.cleared2Fa as boolean
       session.user.nonce = token.nonce as string

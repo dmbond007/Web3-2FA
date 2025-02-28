@@ -15,6 +15,7 @@ export default {
       backgroundImage: {
         'lobster': "url('/AbstractLobster.png')",
         'crab': "url('/crab2.png')",
+        'oysters': "url('/Oysters.png')"
       },
     },
 
