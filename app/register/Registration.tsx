@@ -17,12 +17,12 @@ export default function RegisterForm({ setSubmitted, setData }: any) {
   };
 
   return (
-    <div className="max-w-md mx-auto mt-10 p-6 bg-white shadow-lg rounded-lg">
-      <h2 className="text-2xl font-semibold text-center mb-4">Register</h2>
+    <div className="max-w-md mx-auto mt-10 p-6 bg-oysters bg-cover shadow-lg rounded-lg">
+      <h2 className="text-2xl text-white font-semibold text-center mb-4">Register</h2>
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
         {/* First Name */}
         <div>
-          <label className="block text-gray-700">First Name</label>
+          <label className="block text-white">First Name</label>
           <input
             type="text"
             {...register("firstName", { required: "First name is required" })}
@@ -33,7 +33,7 @@ export default function RegisterForm({ setSubmitted, setData }: any) {
 
         {/* Last Name */}
         <div>
-          <label className="block text-gray-700">Last Name</label>
+          <label className="block text-white">Last Name</label>
           <input
             type="text"
             {...register("lastName", { required: "Last name is required" })}
@@ -44,7 +44,7 @@ export default function RegisterForm({ setSubmitted, setData }: any) {
 
         {/* Email */}
         <div>
-          <label className="block text-gray-700">Email</label>
+          <label className="block text-white">Email</label>
           <input
             type="email"
             {...register("email", {
@@ -61,7 +61,7 @@ export default function RegisterForm({ setSubmitted, setData }: any) {
 
         {/* Password */}
         <div>
-          <label className="block text-gray-700">Password</label>
+          <label className="block text-white">Password</label>
           <input
             type="password"
             {...register("password", {
@@ -75,7 +75,7 @@ export default function RegisterForm({ setSubmitted, setData }: any) {
 
         {/* Confirm Password */}
         <div>
-          <label className="block text-gray-700">Confirm Password</label>
+          <label className="block text-white">Confirm Password</label>
           <input
             type="password"
             {...register("confirmPassword", {
