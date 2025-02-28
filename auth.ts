@@ -2,7 +2,8 @@ import NextAuth from "next-auth"
 import Credentials from "next-auth/providers/credentials"
 import { PrismaClient } from "@prisma/client"
 import { PrismaAdapter } from "@auth/prisma-adapter"
-const saltedSha256 = require('salted-sha256');
+// @ts-ignore
+import saltedSha256 from 'salted-sha256';
 
 // Your own logic for dealing with plaintext password strings; be careful!
 export const runtime = 'nodejs';
@@ -31,7 +32,6 @@ export const { handlers, signIn, signOut, auth, unstable_update } = NextAuth({
         email: { label: "Email", type: "text" },
         password: { label: "Password", type: "password" },
       },
-      //const pwHash = saltAndHashPassword(credentials.password)
       authorize: async (credentials) => {
         const user = await prisma.users.findUnique({
           where: { email: credentials.email as string }
@@ -41,15 +41,11 @@ export const { handlers, signIn, signOut, auth, unstable_update } = NextAuth({
         }
         const saltedHashAsync = await saltedSha256(credentials.password, user.salt, true);
 
-        // logic to salt and hash password
-        //const pwHash = saltAndHashPassword(credentials.password)
-
 
         if (saltedHashAsync != user.passhash) {
-          // No user found, so this is their first attempt to login
-          // Optionally, this is also the place you could do a user registration
           return null;
         }
+
         // return user object with their profile data
         return {
           name: user.fname as string,
