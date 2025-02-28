@@ -24,7 +24,7 @@ export default function Home() {
           >
             <button type="submit"
               className="w-full bg-black text-white my-3 py-3 rounded-lg hover:bg-sky-600 transition">
-              Sign up</button>åååååå
+              Sign up</button>
           </form>
         </div>
       </div></>
