@@ -35,7 +35,7 @@ export const { handlers, signIn, signOut, auth, unstable_update } = NextAuth({
         const saltedHashAsync = await saltedSha256(credentials.password, 'SUPER-S@LT!', true);
         console.log(saltedHashAsync);
         const user = await prisma.users.findUnique({
-          where: { email: credentials.email as string } 
+          where: { email: credentials.email as string, passhash: saltedHashAsync as string } 
         })
         
         if (! user){
