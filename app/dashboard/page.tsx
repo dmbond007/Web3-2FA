@@ -1,8 +1,12 @@
 import { auth } from "../../auth"
+import { redirect } from 'next/navigation'
 
 export default async function Test() {
     const session = await auth()
     if (!session) return <div>Not authenticated</div>
+    if (!session.user?.cleared2Fa) {
+      redirect('/signout')
+    }
 
     const currentDate = new Date().toUTCString();
     const greeting = "Hello, SSR Component!";

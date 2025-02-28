@@ -1,5 +1,4 @@
 import NextAuth from "next-auth"
-//import AccountRetrieval from "./app/lib/credentials"
 import Credentials from "next-auth/providers/credentials"
 import {PrismaClient} from "@prisma/client"
 import {PrismaAdapter} from "@auth/prisma-adapter"
@@ -13,6 +12,7 @@ declare module "next-auth" {
     nonce: string
   }
 }
+
 const prisma = new PrismaClient()
 const saltedSha256 = require('salted-sha256');
 
@@ -56,7 +56,8 @@ export const { handlers, signIn, signOut, auth, unstable_update } = NextAuth({
           address: user.wallet as string,
           id: user.login as string,
           cleared2Fa : false, 
-          nonce: ""
+          nonce: "",
+          email: user.email
         }
       },
     }),
@@ -67,9 +68,10 @@ export const { handlers, signIn, signOut, auth, unstable_update } = NextAuth({
         token.id = user.id
         token.cleared2Fa = user.cleared2Fa
         token.nonce = user.nonce
+        token.email = user.email
+        token.address = user.address
       }
       if (trigger === "update") {
-        console.log('here!')
         token.cleared2Fa = session.user.cleared2Fa
         token.nonce = session.user.nonce
       }
@@ -79,6 +81,8 @@ export const { handlers, signIn, signOut, auth, unstable_update } = NextAuth({
       session.user.id = token.id as string
       session.user.cleared2Fa = token.cleared2Fa as boolean
       session.user.nonce = token.nonce as string
+      session.user.email = token.email as string
+      session.user.address = token.address as string
       return session
     },
   },
