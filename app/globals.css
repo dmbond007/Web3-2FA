@@ -2,6 +2,11 @@
 @tailwind components;
 @tailwind utilities;
 
+
+button[data-testid="rk-connect-button"] {
+  @apply w-full text-white my-3 py-3 rounded-lg bg-current hover:bg-black transition;
+}
+
 :root {
   --background: #ffffff;
   --foreground: #171717;

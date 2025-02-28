@@ -8,7 +8,8 @@ export default async function Test() {
     const greeting = "Hello, SSR Component!";
    
     return (
-      <div>
+      <div className="flex min-h-screen items-top justify-left bg-lobster bg-cover">
+        <div className="h-4/10 w-full max-w-md bg--white p-8 rounded-2xl shadow-lg">
         <h1>{greeting}</h1>
         <p>
           This component is server-side rendered (SSR) and displays the current
@@ -16,6 +17,7 @@ export default async function Test() {
         </p>
         <p>{currentDate}</p>
         <p>{session.user?.cleared2Fa ? "true": "false"}</p>
+      </div>
       </div>
     );
   }

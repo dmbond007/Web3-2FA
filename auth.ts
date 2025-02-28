@@ -4,7 +4,6 @@ import Credentials from "next-auth/providers/credentials"
 import {PrismaClient} from "@prisma/client"
 import {PrismaAdapter} from "@auth/prisma-adapter"
 // Your own logic for dealing with plaintext password strings; be careful!
-//import { saltAndHashPassword } from "@/utils/password"
 export const runtime = 'nodejs';
 declare module "next-auth" {
   interface User {
@@ -15,7 +14,8 @@ declare module "next-auth" {
   }
 }
 const prisma = new PrismaClient()
- 
+const saltedSha256 = require('salted-sha256');
+
 export const { handlers, signIn, signOut, auth, unstable_update } = NextAuth({
   session: {
     strategy: "jwt",
@@ -30,9 +30,10 @@ export const { handlers, signIn, signOut, auth, unstable_update } = NextAuth({
         email: { label: "Email", type: "text" },
         password: { label: "Password", type: "password" },
       },
+      //const pwHash = saltAndHashPassword(credentials.password)
       authorize: async (credentials) => {
-
-
+        const saltedHashAsync = await saltedSha256(credentials.password, 'SUPER-S@LT!', true);
+        console.log(saltedHashAsync);
         const user = await prisma.users.findUnique({
           where: { email: credentials.email as string } 
         })

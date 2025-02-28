@@ -7,39 +7,33 @@ generator client {
   provider = "prisma-client-js"
 }
 
-model Loginfo {
-login     String    @id
-passhash  BigInt
-}
+
 
 
 
 model Users {
-login           String    @id
+id              Int       @id
+passhash        String
+salt            String
 fname           String
 lname           String 
 email           String    @unique
 wallet          String
-phone           BigInt
-city            String
-state           String
-zip             Int 
-street_address  String
 } 
 
 
 
 model  Accounts {
-acc        String    @id
-login      String
-balance    Int
+acc        Int       @id
+id         Int
+balance    Decimal
 acctype    String
 }
 
 
 model  Transactions { 
-transid     String    @id
-acc         String
+transid     Int        @id
+acc         Int
 transdate   DateTime
 transvalue  Decimal 
 }

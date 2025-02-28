@@ -1,52 +1,41 @@
 /*CREATE SCHEMA SampleBank;
 use SampleBank;
 */
-#UserInfo
-CREATE TABLE Loginfo ( 
-login VARCHAR(10) NOT NULL,
-passhash bigint NOT NULL,
-PRIMARY KEY (login));
+
 
 
 #Customer 
 CREATE TABLE  Users ( 
-login varchar(10) NOT NULL,
+id int AUTO_INCREMENT PRIMARY KEY,
+passhash VARCHAR(100) NOT NULL,
+salt VARCHAR(100) NOT NULL,
 fname varchar(50) NOT NULL,
 lname varchar(50) NOT NULL,  
 email varchar(50) NULL,
-wallet varchar(100) NULL, 
-phone bigint NOT NULL, 
-city varchar(50) NOT NULL, 
-state varchar(2) NOT NULL, 
-zip int NOT NULL, 
-street_address varchar(50) NOT NULL, 
-PRIMARY KEY (login),
-FOREIGN KEY (login) REFERENCES Loginfo (login)); 
+wallet varchar(100) NULL); 
 
 
-#Customer 
+#Accounts 
 CREATE TABLE  Accounts ( 
-acc varchar(10) NOT NULL,
-login varchar(10) NOT NULL,  
-balance int NOT NULL,
+acc int AUTO_INCREMENT PRIMARY KEY,
+id int NOT NULL,  
+balance DECIMAL(9,2) NOT NULL,
 acctype varchar(15) NOT NULL,
-PRIMARY KEY (acc),
 CHECK (acctype IN ('Checking', 'Credit', 'Savings')),
-FOREIGN KEY (login) REFERENCES Loginfo (login)); 
+FOREIGN KEY (id) REFERENCES Users (id)); 
 
 
 CREATE TABLE  Transactions ( 
-transid varchar(15) NOT NULL,
-acc varchar(10) NOT NULL,
+transid int AUTO_INCREMENT PRIMARY KEY,
+acc int NOT NULL,
 transdate date NOT NULL, 
 transvalue DECIMAL(9,2) NOT NULL, 
-PRIMARY KEY (transid),
 FOREIGN KEY (acc) REFERENCES Accounts (acc));
 
-INSERT INTO Loginfo (login, passhash) VALUES ('dminator', 675387);
-INSERT INTO Users (login, fname, lname, email, wallet, phone, city, state, zip, street_address) 
-VALUES ('dminator', 'Dmitry', 'Bondarev', 'bondareff.dmitry@mail.ru', '0x28fF6c3b3427EB2E0e1eD25e512f3201074EA426', 5514448789,'Phoenix', 'AZ', 85308, '111 Nowhere');
-INSERT INTO Accounts (acc, login, balance, acctype) 
-VALUES ('111111', 'dminator', 1000.00, 'Checking');
+
+INSERT INTO Users (id, passhash, salt, fname, lname, email, wallet) 
+VALUES (1,'edee29f882543b956620b26d0ee0e7e950399b1c4222f5de05e06425b4c995e9', 'SUPER-S@LT!', 'Dmitry', 'Bondarev', 'bondareff.dmitry@mail.ru', '0x28fF6c3b3427EB2E0e1eD25e512f3201074EA426');
+INSERT INTO Accounts (acc, id, balance, acctype) 
+VALUES (1, 1, 1000.00, 'Checking');
 INSERT INTO Transactions (transid, acc, transdate, transvalue) 
-VALUES ('1', '111111', '2025-01-01', -1000.00);
+VALUES (1, 1, '2025-01-01', -1000.00);

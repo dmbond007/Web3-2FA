@@ -61,7 +61,7 @@ export default function Signature() {
 
   return (
   <>
-    {isConnected && host && origin && <button onClick={signInWithEthereum}>Sign message</button>}
+    {isConnected && host && origin && <button  className="w-full bg-black text-white my-3 py-3 rounded-lg hover:bg-sky-600 transition" onClick={signInWithEthereum}>Sign message</button>}
   </>
   )
 }

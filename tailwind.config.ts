@@ -12,7 +12,12 @@ export default {
         background: "var(--background)",
         foreground: "var(--foreground)",
       },
+      backgroundImage: {
+        'lobster': "url('/AbstractLobster.png')",
+        'crab': "url('/crab2.png')",
+      },
     },
+
   },
   plugins: [],
 } satisfies Config;
