@@ -4,21 +4,27 @@ import '@rainbow-me/rainbowkit/styles.css';
 import { Buffer } from 'buffer'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import React from 'react'
-import { WagmiProvider } from 'wagmi'
-import {RainbowKitProvider,} from '@rainbow-me/rainbowkit';
-import { config } from '../wagmi';
+import { WagmiProvider, cookieToInitialState } from 'wagmi'
+import { RainbowKitProvider, } from '@rainbow-me/rainbowkit';
+import { getConfig } from '../wagmi';
+import { headers } from 'next/headers';
 import './globals.css'
 import { ReactNode } from "react";
+import { useState } from 'react';
 
 globalThis.Buffer = Buffer
 
-const queryClient = new QueryClient()
 
+export default async function Web3Provider({ children }: { children: ReactNode }) {
+  const initialState = cookieToInitialState(
+    getConfig(),
+    (await headers()).get('cookie'));
+  const [config] = useState(() => getConfig());
+  const [queryClient] = useState(() => new QueryClient());
 
-export default function Web3Provider({ children }: { children: ReactNode }) {
-    return (
-      <React.StrictMode>
-      <WagmiProvider config={config}>
+  return (
+    <React.StrictMode>
+      <WagmiProvider config={config} initialState={initialState}>
         <QueryClientProvider client={queryClient}>
           <RainbowKitProvider>
             {children}
@@ -26,5 +32,5 @@ export default function Web3Provider({ children }: { children: ReactNode }) {
         </QueryClientProvider>
       </WagmiProvider>
     </React.StrictMode>
-    )
-  }
+  )
+}
