@@ -1,7 +1,9 @@
 import NextAuth from "next-auth"
 import Credentials from "next-auth/providers/credentials"
-import {PrismaClient} from "@prisma/client"
-import {PrismaAdapter} from "@auth/prisma-adapter"
+import { PrismaClient } from "@prisma/client"
+import { PrismaAdapter } from "@auth/prisma-adapter"
+const saltedSha256 = require('salted-sha256');
+
 // Your own logic for dealing with plaintext password strings; be careful!
 export const runtime = 'nodejs';
 declare module "next-auth" {
@@ -13,8 +15,7 @@ declare module "next-auth" {
   }
 }
 
-const prisma = new PrismaClient()
-const saltedSha256 = require('salted-sha256');
+export const prisma = new PrismaClient()
 
 export const { handlers, signIn, signOut, auth, unstable_update } = NextAuth({
   session: {
@@ -35,27 +36,28 @@ export const { handlers, signIn, signOut, auth, unstable_update } = NextAuth({
         const saltedHashAsync = await saltedSha256(credentials.password, 'SUPER-S@LT!', true);
         console.log(saltedHashAsync);
         const user = await prisma.users.findUnique({
-          where: { email: credentials.email as string, passhash: saltedHashAsync as string } 
+          where: { email: credentials.email as string, passhash: saltedHashAsync as string }
         })
-        
-        if (! user){
+
+        if (!user) {
           return null;
         }
-        
+
         // logic to salt and hash password
         //const pwHash = saltAndHashPassword(credentials.password)
 
- 
+
         if (!user) {
           // No user found, so this is their first attempt to login
           // Optionally, this is also the place you could do a user registration
           throw new Error("Invalid credentials.")
         }
         // return user object with their profile data
-        return {name: user.fname as string,
+        return {
+          name: user.fname as string,
           address: user.wallet as string,
           id: (user.id as any) as string,
-          cleared2Fa : false, 
+          cleared2Fa: false,
           nonce: "",
           email: user.email
         }
