@@ -23,4 +23,4 @@ This project uses [`next/font`](https://nextjs.org/docs/app/building-your-applic
 **NOTE please create an env.local file in the root with the following information**
 1. AUTHSECRET - generate by entering npx auth
 2. NEXT_PUBLIC_WC_PROJECT_ID - to obtain it sign up on https://cloud.reown.com/\
-3. DATABASE_URL - depends on your local database credentials, but you must use MySQL and SampleBank database. Also
+3. DATABASE_URL - depends on your local database credentials, but you must use MySQL and SampleBank database.
