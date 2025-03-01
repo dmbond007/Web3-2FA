@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { SiweMessage, SiweErrorType } from "siwe";
-import { auth, unstable_update, signOut } from "../../../auth"
+import { auth, unstable_update } from "../../../auth"
 
 export async function POST(req: NextRequest) {
   const session = await auth()
@@ -15,7 +15,7 @@ export async function POST(req: NextRequest) {
 
     let nonce = ""
     if (session?.user) {
-      nonce  = session.user.nonce
+      nonce = session.user.nonce
     }
 
     if (!body || !message || !signature) {
@@ -29,37 +29,37 @@ export async function POST(req: NextRequest) {
     const data = await SIWEObject.verify({ signature: signature, nonce });
 
     if (!data.success || data.data.address != session?.user?.address as string) {
-      return NextResponse.json({ message: "Unauthenticated" }, {status: 401})
+      return NextResponse.json({ message: "Unauthenticated" }, { status: 401 })
     }
-    
+
     if (session?.user) {
-      await unstable_update({user: { nonce: "", cleared2Fa: true}});
+      await unstable_update({ user: { nonce: "", cleared2Fa: true } });
     }
-    return NextResponse.json({ message: "2FA verification successful" }, {status: 200});
+    return NextResponse.json({ message: "2FA verification successful" }, { status: 200 });
   } catch (e) {
     if (session?.user) {
-      await unstable_update({user: { nonce: "", cleared2Fa: false}});
+      await unstable_update({ user: { nonce: "", cleared2Fa: false } });
     }
     console.error(e as string);
     switch (e) {
-        case SiweErrorType.EXPIRED_MESSAGE: {
-          return NextResponse.json(
-            { message: e },
-            { status: 440 }
-          );
-        }
-        case SiweErrorType.INVALID_SIGNATURE: {
-          return NextResponse.json(
-            { message: e },
-            { status: 422 }
-          );
-        }
-        default: {
-          return NextResponse.json(
-            { message: e },
-            { status: 500 }
-          );
-        }
-    }        
-}
+      case SiweErrorType.EXPIRED_MESSAGE: {
+        return NextResponse.json(
+          { message: e },
+          { status: 440 }
+        );
+      }
+      case SiweErrorType.INVALID_SIGNATURE: {
+        return NextResponse.json(
+          { message: e },
+          { status: 422 }
+        );
+      }
+      default: {
+        return NextResponse.json(
+          { message: e },
+          { status: 500 }
+        );
+      }
+    }
+  }
 }
